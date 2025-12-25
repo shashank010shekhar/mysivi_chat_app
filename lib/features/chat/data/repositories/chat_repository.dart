@@ -131,7 +131,14 @@ class ChatRepositoryImpl implements domain.ChatRepository {
 
   @override
   Future<String?> fetchWordMeaning(String word) async {
-    return await _apiService.fetchWordMeaning(word);
+    try {
+      return await _apiService.fetchWordMeaning(word);
+    } catch (e) {
+      // Handle errors gracefully - return null instead of throwing
+      // This allows the UI to show a user-friendly message
+      // The API service already handles most errors, but we catch any unexpected ones
+      return null;
+    }
   }
 
   @override

@@ -514,6 +514,11 @@ class _WordMeaningBottomSheetState extends State<_WordMeaningBottomSheet> {
   }
 
   Future<void> _fetchWordMeaning() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
     try {
       final fetchWordMeaningUseCase = getIt<FetchWordMeaningUseCase>();
       final meaning = await fetchWordMeaningUseCase(widget.word);
@@ -524,15 +529,18 @@ class _WordMeaningBottomSheetState extends State<_WordMeaningBottomSheet> {
         _isLoading = false;
         if (meaning != null && meaning.isNotEmpty) {
           _meaning = meaning;
+          _error = null;
         } else {
-          _error = 'No meaning found for this word.';
+          _meaning = null;
+          _error = 'No meaning found for "${widget.word}".';
         }
       });
     } catch (e) {
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = 'Could not fetch word meaning. Please try again.';
+        _meaning = null;
+        _error = 'Could not fetch word meaning. Please check your internet connection and try again.';
       });
     }
   }
